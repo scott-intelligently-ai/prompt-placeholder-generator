@@ -1,7 +1,9 @@
 import OpenAI from "openai";
 import { ExtractedPlaceholders, TemplateMetadata } from "@/types";
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function getClient(): OpenAI {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 function buildExtractionPrompt(
   metadata: TemplateMetadata,
@@ -76,7 +78,7 @@ export async function extractPlaceholders(
 ): Promise<ExtractedPlaceholders> {
   const systemPrompt = buildExtractionPrompt(metadata, blocks);
 
-  const response = await client.responses.create({
+  const response = await getClient().responses.create({
     model: "gpt-5.2",
     input: [
       { role: "developer", content: systemPrompt },

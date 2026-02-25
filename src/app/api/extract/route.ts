@@ -7,6 +7,13 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "your-openai-api-key-here") {
+      return NextResponse.json(
+        { error: "OPENAI_API_KEY is not configured on the server." },
+        { status: 500 }
+      );
+    }
+
     const formData = await request.formData();
     const templateSlug = formData.get("templateSlug") as string;
     const textInput = formData.get("text") as string | null;
@@ -49,7 +56,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const metadata = loadTemplateMetadata(templateSlug);
+    let metadata;
+    try {
+      metadata = loadTemplateMetadata(templateSlug);
+    } catch (err) {
+      console.error("Template load failed:", err);
+      return NextResponse.json(
+        { error: `Template "${templateSlug}" not found. The template files may not be deployed correctly.` },
+        { status: 500 }
+      );
+    }
+
     const blocks = loadAllBlocks(templateSlug);
     const placeholders = await extractPlaceholders(
       combinedText,
