@@ -245,16 +245,18 @@ export default function AdminPage() {
   // Settings state
   const [metadata, setMetadata] = useState<TemplateMetadata | null>(null);
   const [metadataSha, setMetadataSha] = useState("");
+  const [originalMetadataJson, setOriginalMetadataJson] = useState("");
 
   // Blocks state
   const [blocks, setBlocks] = useState<
-    { filename: string; label: string; content: string; sha: string }[]
+    { filename: string; label: string; content: string; sha: string; originalContent: string }[]
   >([]);
   const [activeBlock, setActiveBlock] = useState(0);
 
   // Rules state
   const [rules, setRules] = useState("");
   const [rulesSha, setRulesSha] = useState("");
+  const [originalRules, setOriginalRules] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -273,6 +275,7 @@ export default function AdminPage() {
       const meta: TemplateMetadata = JSON.parse(metaFile.content);
       setMetadata(meta);
       setMetadataSha(metaFile.sha);
+      setOriginalMetadataJson(metaFile.content);
 
       const blockData = await Promise.all(
         meta.blocks.map(async (b) => {
@@ -282,6 +285,7 @@ export default function AdminPage() {
             label: b.label,
             content: file.content,
             sha: file.sha,
+            originalContent: file.content,
           };
         })
       );
@@ -294,9 +298,11 @@ export default function AdminPage() {
         );
         setRules(rulesFile.content);
         setRulesSha(rulesFile.sha);
+        setOriginalRules(rulesFile.content);
       } catch {
         setRules("");
         setRulesSha("");
+        setOriginalRules("");
       }
     } catch (err) {
       setStatus({
@@ -314,38 +320,45 @@ export default function AdminPage() {
 
   const handleSave = async () => {
     if (!selectedTemplate || !metadata) return;
-    setStatus({ type: "saving", message: "Saving..." });
+    setStatus({ type: "saving", message: "Saving all changes..." });
+
+    const saved: string[] = [];
 
     try {
-      if (tab === "settings") {
-        const content = JSON.stringify(metadata, null, 2) + "\n";
+      const currentMetadataJson = JSON.stringify(metadata, null, 2) + "\n";
+      if (currentMetadataJson !== originalMetadataJson) {
         const result = await saveFile(
           `templates/${selectedTemplate}/metadata.json`,
-          content,
+          currentMetadataJson,
           metadataSha,
           `Update ${metadata.name} metadata`
         );
         setMetadataSha(result.sha);
-        setStatus({
-          type: "success",
-          message: `Saved metadata.json. Vercel will redeploy in ~30s.`,
-        });
-      } else if (tab === "blocks") {
-        const block = blocks[activeBlock];
-        const result = await saveFile(
-          `templates/${selectedTemplate}/${block.filename}`,
-          block.content,
-          block.sha,
-          `Update ${block.label} block`
-        );
-        const updated = [...blocks];
-        updated[activeBlock] = { ...updated[activeBlock], sha: result.sha };
-        setBlocks(updated);
-        setStatus({
-          type: "success",
-          message: `Saved ${block.filename}. Vercel will redeploy in ~30s.`,
-        });
-      } else if (tab === "rules") {
+        setOriginalMetadataJson(currentMetadataJson);
+        saved.push("metadata.json");
+      }
+
+      const updatedBlocks = [...blocks];
+      for (let i = 0; i < updatedBlocks.length; i++) {
+        const block = updatedBlocks[i];
+        if (block.content !== block.originalContent) {
+          const result = await saveFile(
+            `templates/${selectedTemplate}/${block.filename}`,
+            block.content,
+            block.sha,
+            `Update ${block.label} block`
+          );
+          updatedBlocks[i] = {
+            ...updatedBlocks[i],
+            sha: result.sha,
+            originalContent: block.content,
+          };
+          saved.push(block.filename);
+        }
+      }
+      setBlocks(updatedBlocks);
+
+      if (rules !== originalRules) {
         const result = await saveFile(
           `templates/${selectedTemplate}/extraction-rules.txt`,
           rules,
@@ -353,15 +366,26 @@ export default function AdminPage() {
           `Update extraction rules`
         );
         setRulesSha(result.sha);
+        setOriginalRules(rules);
+        saved.push("extraction-rules.txt");
+      }
+
+      if (saved.length === 0) {
         setStatus({
           type: "success",
-          message: `Saved extraction-rules.txt. Vercel will redeploy in ~30s.`,
+          message: "No changes to save.",
+        });
+      } else {
+        setStatus({
+          type: "success",
+          message: `Saved ${saved.join(", ")}. Vercel will redeploy in ~30s.`,
         });
       }
     } catch (err) {
+      const partial = saved.length > 0 ? ` (saved ${saved.join(", ")} before error)` : "";
       setStatus({
         type: "error",
-        message: err instanceof Error ? err.message : "Save failed",
+        message: (err instanceof Error ? err.message : "Save failed") + partial,
       });
     }
   };
