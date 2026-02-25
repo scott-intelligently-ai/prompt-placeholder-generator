@@ -1,6 +1,6 @@
 {
-  "name": "Occasion Statement",
-  "description": "An Occasion Statement describes when the situation occurred (time/event/setting/pattern), using timing cues only.",
+  "name": "Statement",
+  "description": "This is the standard statement generated in different steps of SkillStream Performance Engines (\"SkillStreams\").",
   "blocks": [
     {
       "filename": "ASSIGNMENT block.txt",
