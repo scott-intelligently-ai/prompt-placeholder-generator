@@ -17,7 +17,7 @@ EXTRACTION RULES:
    (b) Include: criteria specifying things the artifact must include
    (c) Exclude: criteria specifying things the artifact must exclude
    (d) Custom: any other evaluation criteria
-   Format each as: "[criteria name]: [requirement]" for standard, "Include: [requirement]" for include, "Exclude: [requirement]" for exclude, "Custom: [requirement]" for custom. Scope Fit should be: "Scope Fit: Output matches the Defined Scope and {{artifact_name}} definition above, with the {{artifact_name}} placeholder replaced by its value.
+   Format each as: "[criteria name]: [requirement]" for standard, "Include: [requirement]" for include, "Exclude: [requirement]" for exclude, "Custom: [requirement]" for custom. Scope Fit should be: "Scope Fit: Output matches the Defined Scope and {{artifact_name}} definition above.
 
 8. "criteria_guidance": If there are interpretive instructions that clarify how criteria should be applied, extract them as a single text block. If none, return an empty string. Do not include anything on the input variables.
 
