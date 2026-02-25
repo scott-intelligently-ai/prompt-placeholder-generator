@@ -19,6 +19,7 @@ const EMPTY_PLACEHOLDERS: ExtractedPlaceholders = {
   checklist: [],
   criteria_guidance: "",
   input_variables_list: [],
+  input_definitions: [],
 };
 
 export default function Home() {

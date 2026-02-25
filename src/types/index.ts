@@ -31,6 +31,11 @@ export interface InputVariablesListEntry {
   bracketed_snake_case_name: string;
 }
 
+export interface InputDefinition {
+  name: string;
+  definition: string;
+}
+
 export interface ExtractedPlaceholders {
   artifact_name: string;
   defined_scope: string;
@@ -41,6 +46,7 @@ export interface ExtractedPlaceholders {
   checklist: string[];
   criteria_guidance: string;
   input_variables_list: InputVariablesListEntry[];
+  input_definitions: InputDefinition[];
 }
 
 export interface PlaceholderRow {

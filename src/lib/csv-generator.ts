@@ -60,6 +60,20 @@ export function placeholdersToRows(
     });
   }
 
+  if (data.input_definitions.length > 0) {
+    data.input_definitions.forEach((v, i) => {
+      const n = i + 1;
+      rows.push({
+        placeholder: `input_def${n}_name`,
+        content: v.name,
+      });
+      rows.push({
+        placeholder: `input_def${n}_definition`,
+        content: v.definition,
+      });
+    });
+  }
+
   rows.push({ placeholder: "target_artifact", content: data.artifact_name });
 
   rows.push({

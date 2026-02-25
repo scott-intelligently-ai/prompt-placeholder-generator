@@ -57,6 +57,22 @@ function expandInputBlock(template: string, data: ExtractedPlaceholders): string
     useLines
   );
 
+  if (data.input_definitions.length > 0) {
+    const defLines = data.input_definitions
+      .map((d) => `${d.name}\n${d.definition}`)
+      .join("\n\n");
+
+    result = result.replace(
+      /# INPUT DEFINITIONS\n\{\{normalize \{\{variable1_name\}\}\}\}\n\{\{variable1_definition\}\}\n\n\.\.\.\n\n\{\{normalize \{\{variableN_name\}\}\}\}\n\{\{variableN_definition\}\}/,
+      `# INPUT DEFINITIONS\n${defLines}`
+    );
+  } else {
+    result = result.replace(
+      /\n\n# INPUT DEFINITIONS\n\{\{normalize \{\{variable1_name\}\}\}\}\n\{\{variable1_definition\}\}\n\n\.\.\.\n\n\{\{normalize \{\{variableN_name\}\}\}\}\n\{\{variableN_definition\}\}/,
+      ""
+    );
+  }
+
   return result;
 }
 

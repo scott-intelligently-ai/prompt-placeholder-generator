@@ -13,3 +13,12 @@ Do not output variable names or braces (e.g., do not print variable_name or \\{{
 
 {{normalize {{variableN_name}}}}
 {{variableN_use}}
+
+# INPUT DEFINITIONS
+{{normalize {{variable1_name}}}}
+{{variable1_definition}}
+
+...
+
+{{normalize {{variableN_name}}}}
+{{variableN_definition}}

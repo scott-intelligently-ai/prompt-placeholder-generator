@@ -23,6 +23,8 @@ EXTRACTION RULES:
 
 9. "inputs variables list": If inputs from other modules are described and included in input, return them as a JSON array of objects with "title_case_name" (remove snake_case and use title case) and "bracketed_snake_case_name" (the snake_case_name in curly brackets {{ }}). If none, return an empty array.
 
+10. "input_definitions": If any input variables have definitions that provide clarification about what the input is, return them as a JSON array of objects with "name" (title case) and "definition" (the clarifying definition text). Only include inputs that have definitions. If none have definitions, return an empty array.
+
 OUTPUT FORMAT:
 Return ONLY a valid JSON object with exactly these keys:
 {
@@ -34,7 +36,8 @@ Return ONLY a valid JSON object with exactly these keys:
   "inputs": [{"name": "string", "use": "string"}, ...],
   "checklist": ["string", ...],
   "criteria_guidance": "string",
-  "input_variables_list": [{"title_case_name": "string", "bracketed_snake_case_name": "string"}, ...]
+  "input_variables_list": [{"title_case_name": "string", "bracketed_snake_case_name": "string"}, ...],
+  "input_definitions": [{"name": "string", "definition": "string"}, ...]
 }
 
 Do NOT include any text outside the JSON object. Do NOT use markdown formatting.

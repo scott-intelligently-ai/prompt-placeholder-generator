@@ -110,6 +110,14 @@
       "block": "INPUT VARIABLES LIST"
     },
     {
+      "key": "input_definitions",
+      "label": "Input Definitions",
+      "description": "Definitions of input variables when clarification is needed. Each has a name (title case) and a definition (the clarifying text).",
+      "type": "variable_list",
+      "required": false,
+      "block": "INPUTS"
+    },
+    {
       "key": "checklist",
       "label": "Canonical Checklist",
       "description": "A bulleted list of criteria used to evaluate the quality of the Target Artifact. Types in order: Standard (Scope Fit mandatory, Format, Count, Length, Voice, De-duplication), Include, Exclude, Custom.",

@@ -4,6 +4,7 @@ import {
   ExtractedPlaceholders,
   Input,
   InputVariablesListEntry,
+  InputDefinition,
 } from "@/types";
 
 interface Props {
@@ -20,6 +21,7 @@ const PLACEHOLDER_LABELS: Record<string, string> = {
   checklist: "Canonical Checklist",
   criteria_guidance: "Criteria Guidance",
   inputs: "Inputs",
+  input_definitions: "Input Definitions",
   input_variables_list: "Input Variables List",
 };
 
@@ -36,6 +38,8 @@ const PLACEHOLDER_DESCRIPTIONS: Record<string, string> = {
     "Interpretive instructions clarifying how criteria should be applied",
   inputs:
     "Inputs from other modules for the INPUTS block. Each has a title-case name and operational permissions (use).",
+  input_definitions:
+    "Definitions of input variables when clarification is needed in the prompt. Each has a title-case name and its definition.",
   input_variables_list:
     "Input variables for the INPUT VARIABLES LIST block. Each has a title-case name and a bracketed snake_case name (e.g. {{variable_name}}).",
 };
@@ -295,6 +299,106 @@ function InputsField({
   );
 }
 
+function InputDefinitionsField({
+  definitions,
+  onChange,
+}: {
+  definitions: InputDefinition[];
+  onChange: (vals: InputDefinition[]) => void;
+}) {
+  const addDef = () =>
+    onChange([...definitions, { name: "", definition: "" }]);
+  const removeDef = (index: number) =>
+    onChange(definitions.filter((_, i) => i !== index));
+  const updateDef = (
+    index: number,
+    field: "name" | "definition",
+    value: string
+  ) =>
+    onChange(
+      definitions.map((v, i) => (i === index ? { ...v, [field]: value } : v))
+    );
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div>
+          <label className="block text-sm font-semibold text-gray-800">
+            {PLACEHOLDER_LABELS.input_definitions}
+            <span className="ml-1.5 text-xs font-normal text-gray-400">
+              optional
+            </span>
+          </label>
+          <p className="text-xs text-gray-500">
+            {PLACEHOLDER_DESCRIPTIONS.input_definitions}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={addDef}
+          className="rounded-md bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-600 transition hover:bg-indigo-100"
+        >
+          + Add Definition
+        </button>
+      </div>
+      <div className="space-y-3">
+        {definitions.map((d, i) => (
+          <div
+            key={i}
+            className="rounded-lg border border-gray-200 bg-gray-50 p-3"
+          >
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-xs font-medium text-gray-500">
+                Definition {i + 1}
+              </span>
+              <button
+                type="button"
+                onClick={() => removeDef(i)}
+                className="text-gray-400 transition hover:text-red-500"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={d.name}
+                onChange={(e) => updateDef(i, "name", e.target.value)}
+                placeholder="Name (title case, e.g. What Happened)"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              />
+              <textarea
+                value={d.definition}
+                onChange={(e) => updateDef(i, "definition", e.target.value)}
+                placeholder="Definition that clarifies what this input is..."
+                rows={3}
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              />
+            </div>
+          </div>
+        ))}
+        {definitions.length === 0 && (
+          <p className="py-3 text-center text-xs text-gray-400">
+            No definitions. Click &quot;+ Add Definition&quot; to add one.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function InputVariablesListField({
   entries,
   onChange,
@@ -467,6 +571,13 @@ export default function PlaceholderReview({ data, onChange }: Props) {
           <InputsField
             inputs={data.inputs}
             onChange={(vals) => update("inputs", vals)}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 pt-5">
+          <InputDefinitionsField
+            definitions={data.input_definitions}
+            onChange={(vals) => update("input_definitions", vals)}
           />
         </div>
 

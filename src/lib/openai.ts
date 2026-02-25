@@ -25,6 +25,8 @@ const DEFAULT_EXTRACTION_RULES = `EXTRACTION RULES:
 
 9. "input_variables_list": If inputs from other modules are described, return as a JSON array of objects with "title_case_name" (title case) and "bracketed_snake_case_name" (snake_case in curly brackets {{ }}). If none, return an empty array.
 
+10. "input_definitions": If any input variables have definitions that provide clarification, return as a JSON array of objects with "name" (title case) and "definition" (the clarifying text). Only include inputs that have definitions. If none, return an empty array.
+
 OUTPUT FORMAT:
 Return ONLY a valid JSON object with exactly these keys:
 {
@@ -36,7 +38,8 @@ Return ONLY a valid JSON object with exactly these keys:
   "inputs": [{"name": "string", "use": "string"}, ...],
   "checklist": ["string", ...],
   "criteria_guidance": "string",
-  "input_variables_list": [{"title_case_name": "string", "bracketed_snake_case_name": "string"}, ...]
+  "input_variables_list": [{"title_case_name": "string", "bracketed_snake_case_name": "string"}, ...],
+  "input_definitions": [{"name": "string", "definition": "string"}, ...]
 }
 
 Do NOT include any text outside the JSON object. Do NOT use markdown formatting.`;
@@ -127,6 +130,12 @@ function validateAndNormalize(
       ? raw.input_variables_list.map((v) => ({
           title_case_name: v.title_case_name || "",
           bracketed_snake_case_name: v.bracketed_snake_case_name || "",
+        }))
+      : [],
+    input_definitions: Array.isArray(raw.input_definitions)
+      ? raw.input_definitions.map((v) => ({
+          name: v.name || "",
+          definition: v.definition || "",
         }))
       : [],
   };
