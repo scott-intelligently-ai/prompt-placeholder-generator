@@ -57,12 +57,19 @@ export default function Home() {
         body: formData,
       });
 
+      const responseText = await res.text();
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Extraction failed");
+        let errorMessage = "Extraction failed";
+        try {
+          const errData = JSON.parse(responseText);
+          errorMessage = errData.error || errorMessage;
+        } catch {
+          errorMessage = responseText || `Server error (${res.status})`;
+        }
+        throw new Error(errorMessage);
       }
 
-      const data = await res.json();
+      const data = JSON.parse(responseText);
       setPlaceholders(data.placeholders);
       setStep("review");
     } catch (err) {

@@ -76,21 +76,20 @@ export async function extractPlaceholders(
 ): Promise<ExtractedPlaceholders> {
   const systemPrompt = buildExtractionPrompt(metadata, blocks);
 
-  const response = await client.chat.completions.create({
-    model: "gpt-5.2-thinking",
-    response_format: { type: "json_object" },
-    messages: [
-      { role: "system", content: systemPrompt },
+  const response = await client.responses.create({
+    model: "gpt-5.2",
+    input: [
+      { role: "developer", content: systemPrompt },
       {
         role: "user",
         content: `Extract all placeholder values from the following text. If information for an optional placeholder is not found, use the appropriate empty value (empty string or empty array).\n\n---\n\n${userText}`,
       },
     ],
-    temperature: 0.1,
-    max_tokens: 4096,
+    reasoning: { effort: "medium" },
+    text: { format: { type: "json_object" } },
   });
 
-  const content = response.choices[0]?.message?.content;
+  const content = response.output_text;
   if (!content) {
     throw new Error("No response from OpenAI");
   }
