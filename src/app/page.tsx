@@ -29,6 +29,9 @@ export default function Home() {
   const [placeholders, setPlaceholders] =
     useState<ExtractedPlaceholders>(EMPTY_PLACEHOLDERS);
   const [error, setError] = useState("");
+  const [assembledPrompt, setAssembledPrompt] = useState<string | null>(null);
+  const [assembling, setAssembling] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     fetch("/api/templates")
@@ -84,6 +87,55 @@ export default function Home() {
     setText("");
     setFiles([]);
     setError("");
+    setAssembledPrompt(null);
+    setAssembling(false);
+    setCopied(false);
+  };
+
+  const handleCreatePrompt = async () => {
+    setAssembling(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/assemble-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          templateSlug: selectedTemplate,
+          placeholders,
+        }),
+      });
+
+      const responseText = await res.text();
+      if (!res.ok) {
+        let msg = "Failed to assemble prompt";
+        try {
+          const errData = JSON.parse(responseText);
+          msg = errData.error || msg;
+        } catch {
+          msg = responseText || `Server error (${res.status})`;
+        }
+        throw new Error(msg);
+      }
+
+      const result = JSON.parse(responseText);
+      setAssembledPrompt(result.prompt);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Assembly failed");
+    } finally {
+      setAssembling(false);
+    }
+  };
+
+  const handleCopyPrompt = async () => {
+    if (assembledPrompt === null) return;
+    try {
+      await navigator.clipboard.writeText(assembledPrompt);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* fallback for older browsers */
+    }
   };
 
   return (
@@ -248,11 +300,118 @@ export default function Home() {
                 >
                   Start Over
                 </button>
-                <CsvDownload
-                  data={placeholders}
-                  artifactName={placeholders.artifact_name}
-                />
+                <div className="flex items-center gap-3">
+                  <CsvDownload
+                    data={placeholders}
+                    artifactName={placeholders.artifact_name}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCreatePrompt}
+                    disabled={assembling}
+                    className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {assembling ? (
+                      <>
+                        <svg
+                          className="h-4 w-4 animate-spin"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
+                        </svg>
+                        Assembling...
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="h-4 w-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                        Create Prompt
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
+
+              {assembledPrompt !== null && (
+                <div className="border-t border-gray-100 pt-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Assembled Prompt
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={handleCopyPrompt}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    >
+                      {copied ? (
+                        <>
+                          <svg
+                            className="h-3.5 w-3.5 text-emerald-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <svg
+                            className="h-3.5 w-3.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                            />
+                          </svg>
+                          Copy to Clipboard
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <textarea
+                    value={assembledPrompt}
+                    onChange={(e) => setAssembledPrompt(e.target.value)}
+                    className="h-96 w-full resize-y rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 font-mono text-sm text-gray-800 shadow-inner focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                    spellCheck={false}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>

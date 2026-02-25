@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     "/api/templates": ["./templates/**/*"],
     "/api/extract": ["./templates/**/*"],
     "/api/admin/files": ["./templates/**/*"],
+    "/api/assemble-prompt": ["./templates/**/*"],
   },
   serverExternalPackages: ["pdf-parse"],
 };
