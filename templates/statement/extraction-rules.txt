@@ -10,7 +10,7 @@ EXTRACTION RULES:
 
 5. "examples": If examples of high-quality Target Artifacts are present, return them as a JSON array of strings. If none, return an empty array.
 
-6. "input_variables": If input variables from other modules are described, return them as a JSON array of objects with "name" (remove snake_case and use title case) and "use" (the operational permissions / functional role of that input). If none, return an empty array.
+6. "inputs": If inputs from other modules are described, return them as a JSON array of objects with "name" (remove snake_case and use title case) and "use" (the operational permissions / functional role of that input). If none, return an empty array.
 
 7. "checklist": Extract evaluation criteria. Return as a JSON array of strings. Criteria types should appear in this order:
    (a) Standard: Scope Fit (mandatory), Format, Count, Length, Voice, De-duplication
@@ -21,6 +21,8 @@ EXTRACTION RULES:
 
 8. "criteria_guidance": If there are interpretive instructions that clarify how criteria should be applied, extract them as a single text block. If none, return an empty string. Do not include anything on the input variables.
 
+9. "inputs variables list": If inputs from other modules are described and included in input, return them as a JSON array of objects with "title_case_name" (remove snake_case and use title case) and "bracketed_snake_case_name" (the snake_case_name in curly brackets {{ }}). If none, return an empty array.
+
 OUTPUT FORMAT:
 Return ONLY a valid JSON object with exactly these keys:
 {
@@ -29,9 +31,10 @@ Return ONLY a valid JSON object with exactly these keys:
   "hard_boundary_may_not": ["string", ...],
   "definition": "string",
   "examples": ["string", ...],
-  "input_variables": [{"name": "string", "use": "string"}, ...],
+  "inputs": [{"name": "string", "use": "string"}, ...],
   "checklist": ["string", ...],
-  "criteria_guidance": "string"
+  "criteria_guidance": "string",
+  "input_variables_list": [{"title_case_name": "string", "bracketed_snake_case_name": "string"}, ...]
 }
 
 Do NOT include any text outside the JSON object. Do NOT use markdown formatting.
