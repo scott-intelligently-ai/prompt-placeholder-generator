@@ -1,11 +1,5 @@
 import { ExtractedPlaceholders, TemplateMetadata } from "@/types";
 
-function normalize(snakeName: string): string {
-  return snakeName
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
 function formatBulletList(items: string[]): string {
   return items
     .map((item) => (item.startsWith("- ") ? item : `- ${item}`))
@@ -29,8 +23,10 @@ function shouldIncludeBlock(
   switch (condition) {
     case "examples":
       return data.examples.length > 0;
-    case "input_variables":
-      return data.input_variables.length > 0;
+    case "inputs":
+      return data.inputs.length > 0;
+    case "input_variables_list":
+      return data.input_variables_list.length > 0;
     case "criteria_guidance":
       return !!data.criteria_guidance.trim();
     default:
@@ -39,25 +35,23 @@ function shouldIncludeBlock(
 }
 
 function expandInputBlock(template: string, data: ExtractedPlaceholders): string {
-  if (data.input_variables.length === 0) return template;
+  if (data.inputs.length === 0) return template;
 
-  const bindingLines = data.input_variables
-    .map((v) => `- ${normalize(v.name)}`)
+  const bindingLines = data.inputs
+    .map((v) => `- ${v.name}`)
     .join("\n");
 
-  const useLines = data.input_variables
-    .map((v) => `${normalize(v.name)}\n${v.use}`)
+  const useLines = data.inputs
+    .map((v) => `${v.name}\n${v.use}`)
     .join("\n\n");
 
   let result = template;
 
-  // Replace the bindings section (the bulleted variable list with ... pattern)
   result = result.replace(
     /- \{\{normalize \{\{variable1_name\}\}\}\}\n\.\.\.\n- \{\{normalize \{\{variableN_name\}\}\}\}/,
     bindingLines
   );
 
-  // Replace the HOW TO USE section (the variable_use pattern with ... between)
   result = result.replace(
     /\{\{normalize \{\{variable1_name\}\}\}\}\n\{\{variable1_use\}\}\n\n\.\.\.\n\n\{\{normalize \{\{variableN_name\}\}\}\}\n\{\{variableN_use\}\}/,
     useLines
@@ -70,14 +64,13 @@ function expandInputVariablesListBlock(
   template: string,
   data: ExtractedPlaceholders
 ): string {
-  if (data.input_variables.length === 0) return template;
+  if (data.input_variables_list.length === 0) return template;
 
-  const varLines = data.input_variables
-    .map((v) => `${normalize(v.name)} = {{${v.name}}}`)
+  const varLines = data.input_variables_list
+    .map((v) => `${v.title_case_name} = ${v.bracketed_snake_case_name}`)
     .join("\n");
 
-  // Replace the variable list pattern with ... between first and last
-  let result = template.replace(
+  const result = template.replace(
     /\{\{normalize \{\{variable1_name\}\}\}\} = \{\{var variable1_name\}\}\n\.\.\.\n\{\{normalize \{\{variableN_name\}\}\}\} = \{\{var variableN_name\}\}/,
     varLines
   );

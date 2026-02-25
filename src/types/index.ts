@@ -21,9 +21,14 @@ export interface TemplateMetadata {
   placeholders: PlaceholderConfig[];
 }
 
-export interface InputVariable {
+export interface Input {
   name: string;
   use: string;
+}
+
+export interface InputVariablesListEntry {
+  title_case_name: string;
+  bracketed_snake_case_name: string;
 }
 
 export interface ExtractedPlaceholders {
@@ -32,9 +37,10 @@ export interface ExtractedPlaceholders {
   hard_boundary_may_not: string[];
   definition: string;
   examples: string[];
-  input_variables: InputVariable[];
+  inputs: Input[];
   checklist: string[];
   criteria_guidance: string;
+  input_variables_list: InputVariablesListEntry[];
 }
 
 export interface PlaceholderRow {

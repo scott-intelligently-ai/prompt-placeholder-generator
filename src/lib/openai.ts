@@ -17,11 +17,13 @@ const DEFAULT_EXTRACTION_RULES = `EXTRACTION RULES:
 
 5. "examples": If examples are present, return as a JSON array of strings. If none, return an empty array.
 
-6. "input_variables": If input variables are described, return as a JSON array of objects with "name" and "use". If none, return an empty array.
+6. "inputs": If inputs from other modules are described, return as a JSON array of objects with "name" (title case) and "use" (operational permissions / functional role). If none, return an empty array.
 
 7. "checklist": Extract evaluation criteria as a JSON array of strings.
 
 8. "criteria_guidance": If interpretive instructions exist, extract as a single text block. If none, return an empty string.
+
+9. "input_variables_list": If inputs from other modules are described, return as a JSON array of objects with "title_case_name" (title case) and "bracketed_snake_case_name" (snake_case in curly brackets {{ }}). If none, return an empty array.
 
 OUTPUT FORMAT:
 Return ONLY a valid JSON object with exactly these keys:
@@ -31,9 +33,10 @@ Return ONLY a valid JSON object with exactly these keys:
   "hard_boundary_may_not": ["string", ...],
   "definition": "string",
   "examples": ["string", ...],
-  "input_variables": [{"name": "string", "use": "string"}, ...],
+  "inputs": [{"name": "string", "use": "string"}, ...],
   "checklist": ["string", ...],
-  "criteria_guidance": "string"
+  "criteria_guidance": "string",
+  "input_variables_list": [{"title_case_name": "string", "bracketed_snake_case_name": "string"}, ...]
 }
 
 Do NOT include any text outside the JSON object. Do NOT use markdown formatting.`;
@@ -112,13 +115,19 @@ function validateAndNormalize(
       : [],
     definition: raw.definition || "",
     examples: Array.isArray(raw.examples) ? raw.examples : [],
-    input_variables: Array.isArray(raw.input_variables)
-      ? raw.input_variables.map((v) => ({
+    inputs: Array.isArray(raw.inputs)
+      ? raw.inputs.map((v) => ({
           name: v.name || "",
           use: v.use || "",
         }))
       : [],
     checklist: Array.isArray(raw.checklist) ? raw.checklist : [],
     criteria_guidance: raw.criteria_guidance || "",
+    input_variables_list: Array.isArray(raw.input_variables_list)
+      ? raw.input_variables_list.map((v) => ({
+          title_case_name: v.title_case_name || "",
+          bracketed_snake_case_name: v.bracketed_snake_case_name || "",
+        }))
+      : [],
   };
 }

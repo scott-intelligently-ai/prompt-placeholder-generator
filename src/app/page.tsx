@@ -15,9 +15,10 @@ const EMPTY_PLACEHOLDERS: ExtractedPlaceholders = {
   hard_boundary_may_not: [],
   definition: "",
   examples: [],
-  input_variables: [],
+  inputs: [],
   checklist: [],
   criteria_guidance: "",
+  input_variables_list: [],
 };
 
 export default function Home() {

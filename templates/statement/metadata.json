@@ -16,7 +16,7 @@
     {
       "filename": "INPUT block.txt",
       "required": false,
-      "condition": "input_variables",
+      "condition": "inputs",
       "label": "INPUTS"
     },
     {
@@ -48,7 +48,7 @@
     {
       "filename": "INPUT VARIABLES LIST block.txt",
       "required": false,
-      "condition": "input_variables",
+      "condition": "input_variables_list",
       "label": "INPUT VARIABLES LIST"
     }
   ],
@@ -94,12 +94,20 @@
       "block": "EXAMPLES"
     },
     {
-      "key": "input_variables",
-      "label": "Input Variables",
-      "description": "Input variables that hold values from other modules. Each has a name (snake_case) and a use (operational permissions of the input).",
+      "key": "inputs",
+      "label": "Inputs",
+      "description": "Inputs from other modules used in the INPUTS block. Each has a name (title case) and a use (operational permissions / functional role of that input).",
       "type": "variable_list",
       "required": false,
       "block": "INPUTS"
+    },
+    {
+      "key": "input_variables_list",
+      "label": "Input Variables List",
+      "description": "Input variables for the INPUT VARIABLES LIST block. Each has a title_case_name (title case display name) and a bracketed_snake_case_name (the snake_case name in curly brackets, e.g. {{variable_name}}).",
+      "type": "variable_list",
+      "required": false,
+      "block": "INPUT VARIABLES LIST"
     },
     {
       "key": "checklist",

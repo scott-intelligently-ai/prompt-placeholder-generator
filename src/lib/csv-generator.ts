@@ -24,11 +24,11 @@ export function placeholdersToRows(
     });
   }
 
-  if (data.input_variables.length > 0) {
-    data.input_variables.forEach((v, i) => {
+  if (data.inputs.length > 0) {
+    data.inputs.forEach((v, i) => {
       const n = i + 1;
-      rows.push({ placeholder: `variable${n}_name`, content: v.name });
-      rows.push({ placeholder: `variable${n}_use`, content: v.use });
+      rows.push({ placeholder: `input${n}_name`, content: v.name });
+      rows.push({ placeholder: `input${n}_use`, content: v.use });
     });
   }
 
@@ -46,10 +46,22 @@ export function placeholdersToRows(
     });
   }
 
-  // Derived: target_artifact is same as artifact_name
+  if (data.input_variables_list.length > 0) {
+    data.input_variables_list.forEach((v, i) => {
+      const n = i + 1;
+      rows.push({
+        placeholder: `input_var${n}_title_case_name`,
+        content: v.title_case_name,
+      });
+      rows.push({
+        placeholder: `input_var${n}_bracketed_snake_case_name`,
+        content: v.bracketed_snake_case_name,
+      });
+    });
+  }
+
   rows.push({ placeholder: "target_artifact", content: data.artifact_name });
 
-  // Derived: checklist with [MARK] bullets for RESPONSE FORMAT block
   rows.push({
     placeholder: "checklist_with_marks",
     content: data.checklist
@@ -59,20 +71,6 @@ export function placeholdersToRows(
       })
       .join("\n"),
   });
-
-  // Derived: normalized variable names and var operators for INPUT VARIABLES LIST block
-  if (data.input_variables.length > 0) {
-    const varLines = data.input_variables.map((v) => {
-      const normalized = v.name
-        .replace(/_/g, " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase());
-      return `${normalized} = {{${v.name}}}`;
-    });
-    rows.push({
-      placeholder: "input_variables_list",
-      content: varLines.join("\n"),
-    });
-  }
 
   return rows;
 }

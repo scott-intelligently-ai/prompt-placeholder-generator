@@ -1,6 +1,10 @@
 "use client";
 
-import { ExtractedPlaceholders, InputVariable } from "@/types";
+import {
+  ExtractedPlaceholders,
+  Input,
+  InputVariablesListEntry,
+} from "@/types";
 
 interface Props {
   data: ExtractedPlaceholders;
@@ -15,18 +19,25 @@ const PLACEHOLDER_LABELS: Record<string, string> = {
   examples: "Examples",
   checklist: "Canonical Checklist",
   criteria_guidance: "Criteria Guidance",
-  input_variables: "Input Variables",
+  inputs: "Inputs",
+  input_variables_list: "Input Variables List",
 };
 
 const PLACEHOLDER_DESCRIPTIONS: Record<string, string> = {
   artifact_name: "The specific name of the Target Artifact",
-  defined_scope: "Subject-matter boundary of what the artifact is allowed to include",
-  hard_boundary_may_not: "Things the AI must NOT do (one per line, will be bulleted)",
+  defined_scope:
+    "Subject-matter boundary of what the artifact is allowed to include",
+  hard_boundary_may_not:
+    "Things the AI must NOT do (one per line, will be bulleted)",
   definition: "What counts as a Target Artifact in minimal valid form",
   examples: "High-quality examples (one per line, will be bulleted)",
   checklist: "Evaluation criteria (one per line, will be bulleted)",
-  criteria_guidance: "Interpretive instructions clarifying how criteria should be applied",
-  input_variables: "Variables from other modules (name in snake_case + operational permissions)",
+  criteria_guidance:
+    "Interpretive instructions clarifying how criteria should be applied",
+  inputs:
+    "Inputs from other modules for the INPUTS block. Each has a title-case name and operational permissions (use).",
+  input_variables_list:
+    "Input variables for the INPUT VARIABLES LIST block. Each has a title-case name and a bracketed snake_case name (e.g. {{variable_name}}).",
 };
 
 function TextField({
@@ -44,7 +55,9 @@ function TextField({
     <div className="space-y-1">
       <label className="block text-sm font-semibold text-gray-800">
         {label}
-        <span className="ml-1.5 text-xs font-normal text-red-500">required</span>
+        <span className="ml-1.5 text-xs font-normal text-red-500">
+          required
+        </span>
       </label>
       <p className="text-xs text-gray-500">{description}</p>
       <input
@@ -75,10 +88,14 @@ function TextAreaField({
       <label className="block text-sm font-semibold text-gray-800">
         {label}
         {required && (
-          <span className="ml-1.5 text-xs font-normal text-red-500">required</span>
+          <span className="ml-1.5 text-xs font-normal text-red-500">
+            required
+          </span>
         )}
         {!required && (
-          <span className="ml-1.5 text-xs font-normal text-gray-400">optional</span>
+          <span className="ml-1.5 text-xs font-normal text-gray-400">
+            optional
+          </span>
         )}
       </label>
       <p className="text-xs text-gray-500">{description}</p>
@@ -118,10 +135,14 @@ function ListField({
           <label className="block text-sm font-semibold text-gray-800">
             {label}
             {required && (
-              <span className="ml-1.5 text-xs font-normal text-red-500">required</span>
+              <span className="ml-1.5 text-xs font-normal text-red-500">
+                required
+              </span>
             )}
             {!required && (
-              <span className="ml-1.5 text-xs font-normal text-gray-400">optional</span>
+              <span className="ml-1.5 text-xs font-normal text-gray-400">
+                optional
+              </span>
             )}
           </label>
           <p className="text-xs text-gray-500">{description}</p>
@@ -149,8 +170,18 @@ function ListField({
               onClick={() => removeItem(i)}
               className="rounded-lg px-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -165,25 +196,23 @@ function ListField({
   );
 }
 
-function VariableListField({
-  variables,
+function InputsField({
+  inputs,
   onChange,
 }: {
-  variables: InputVariable[];
-  onChange: (vars: InputVariable[]) => void;
+  inputs: Input[];
+  onChange: (vals: Input[]) => void;
 }) {
-  const addVariable = () => onChange([...variables, { name: "", use: "" }]);
-  const removeVariable = (index: number) =>
-    onChange(variables.filter((_, i) => i !== index));
-  const updateVariable = (
+  const addInput = () => onChange([...inputs, { name: "", use: "" }]);
+  const removeInput = (index: number) =>
+    onChange(inputs.filter((_, i) => i !== index));
+  const updateInput = (
     index: number,
     field: "name" | "use",
     value: string
   ) =>
     onChange(
-      variables.map((v, i) =>
-        i === index ? { ...v, [field]: value } : v
-      )
+      inputs.map((v, i) => (i === index ? { ...v, [field]: value } : v))
     );
 
   return (
@@ -191,23 +220,128 @@ function VariableListField({
       <div className="flex items-center justify-between">
         <div>
           <label className="block text-sm font-semibold text-gray-800">
-            {PLACEHOLDER_LABELS.input_variables}
-            <span className="ml-1.5 text-xs font-normal text-gray-400">optional</span>
+            {PLACEHOLDER_LABELS.inputs}
+            <span className="ml-1.5 text-xs font-normal text-gray-400">
+              optional
+            </span>
           </label>
           <p className="text-xs text-gray-500">
-            {PLACEHOLDER_DESCRIPTIONS.input_variables}
+            {PLACEHOLDER_DESCRIPTIONS.inputs}
           </p>
         </div>
         <button
           type="button"
-          onClick={addVariable}
+          onClick={addInput}
           className="rounded-md bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-600 transition hover:bg-indigo-100"
         >
-          + Add Variable
+          + Add Input
         </button>
       </div>
       <div className="space-y-3">
-        {variables.map((v, i) => (
+        {inputs.map((v, i) => (
+          <div
+            key={i}
+            className="rounded-lg border border-gray-200 bg-gray-50 p-3"
+          >
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-xs font-medium text-gray-500">
+                Input {i + 1}
+              </span>
+              <button
+                type="button"
+                onClick={() => removeInput(i)}
+                className="text-gray-400 transition hover:text-red-500"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={v.name}
+                onChange={(e) => updateInput(i, "name", e.target.value)}
+                placeholder="Name (title case, e.g. What Happened)"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              />
+              <textarea
+                value={v.use}
+                onChange={(e) => updateInput(i, "use", e.target.value)}
+                placeholder="Describe the operational permissions and functional role of this input..."
+                rows={3}
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              />
+            </div>
+          </div>
+        ))}
+        {inputs.length === 0 && (
+          <p className="py-3 text-center text-xs text-gray-400">
+            No inputs. Click &quot;+ Add Input&quot; to add one.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function InputVariablesListField({
+  entries,
+  onChange,
+}: {
+  entries: InputVariablesListEntry[];
+  onChange: (vals: InputVariablesListEntry[]) => void;
+}) {
+  const addEntry = () =>
+    onChange([
+      ...entries,
+      { title_case_name: "", bracketed_snake_case_name: "" },
+    ]);
+  const removeEntry = (index: number) =>
+    onChange(entries.filter((_, i) => i !== index));
+  const updateEntry = (
+    index: number,
+    field: "title_case_name" | "bracketed_snake_case_name",
+    value: string
+  ) =>
+    onChange(
+      entries.map((v, i) => (i === index ? { ...v, [field]: value } : v))
+    );
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div>
+          <label className="block text-sm font-semibold text-gray-800">
+            {PLACEHOLDER_LABELS.input_variables_list}
+            <span className="ml-1.5 text-xs font-normal text-gray-400">
+              optional
+            </span>
+          </label>
+          <p className="text-xs text-gray-500">
+            {PLACEHOLDER_DESCRIPTIONS.input_variables_list}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={addEntry}
+          className="rounded-md bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-600 transition hover:bg-indigo-100"
+        >
+          + Add Entry
+        </button>
+      </div>
+      <div className="space-y-3">
+        {entries.map((v, i) => (
           <div
             key={i}
             className="rounded-lg border border-gray-200 bg-gray-50 p-3"
@@ -218,35 +352,49 @@ function VariableListField({
               </span>
               <button
                 type="button"
-                onClick={() => removeVariable(i)}
+                onClick={() => removeEntry(i)}
                 className="text-gray-400 transition hover:text-red-500"
               >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
             <div className="space-y-2">
               <input
                 type="text"
-                value={v.name}
-                onChange={(e) => updateVariable(i, "name", e.target.value)}
-                placeholder="variable_name (snake_case)"
+                value={v.title_case_name}
+                onChange={(e) =>
+                  updateEntry(i, "title_case_name", e.target.value)
+                }
+                placeholder="Title case name (e.g. What Happened)"
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               />
-              <textarea
-                value={v.use}
-                onChange={(e) => updateVariable(i, "use", e.target.value)}
-                placeholder="Describe the operational permissions and functional role of this input..."
-                rows={3}
+              <input
+                type="text"
+                value={v.bracketed_snake_case_name}
+                onChange={(e) =>
+                  updateEntry(i, "bracketed_snake_case_name", e.target.value)
+                }
+                placeholder="Bracketed snake_case (e.g. {{what_happened}})"
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
           </div>
         ))}
-        {variables.length === 0 && (
+        {entries.length === 0 && (
           <p className="py-3 text-center text-xs text-gray-400">
-            No input variables. Click &quot;+ Add Variable&quot; to add one.
+            No entries. Click &quot;+ Add Entry&quot; to add one.
           </p>
         )}
       </div>
@@ -316,9 +464,9 @@ export default function PlaceholderReview({ data, onChange }: Props) {
         </div>
 
         <div className="border-t border-gray-200 pt-5">
-          <VariableListField
-            variables={data.input_variables}
-            onChange={(vars) => update("input_variables", vars)}
+          <InputsField
+            inputs={data.inputs}
+            onChange={(vals) => update("inputs", vals)}
           />
         </div>
 
@@ -338,6 +486,13 @@ export default function PlaceholderReview({ data, onChange }: Props) {
             description={PLACEHOLDER_DESCRIPTIONS.criteria_guidance}
             value={data.criteria_guidance}
             onChange={(v) => update("criteria_guidance", v)}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 pt-5">
+          <InputVariablesListField
+            entries={data.input_variables_list}
+            onChange={(vals) => update("input_variables_list", vals)}
           />
         </div>
       </div>
