@@ -95,4 +95,3 @@ Follow the directions given by the user.
 
 Any word, variable, or placeholder ending with ^^^ is an internal marker only. Before producing final output to the user, omit the suffix entirely. The marker must never appear in user-visible text.
 Any input variable names should be displayed with a space replacing any underscore characters.
-
