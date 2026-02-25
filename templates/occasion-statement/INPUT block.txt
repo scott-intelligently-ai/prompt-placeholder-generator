@@ -1,0 +1,15 @@
+# INPUTS (Bindings)
+- {{normalize {{variable1_name}}}}
+...
+- {{normalize {{variableN_name}}}}
+
+Do not output variable names or braces (e.g., do not print variable_name or \\{{variable_name}}); output only resolved text.
+
+# HOW TO USE INPUTS (Imports)
+{{normalize {{variable1_name}}}}
+{{variable1_use}}
+
+...
+
+{{normalize {{variableN_name}}}}
+{{variableN_use}}

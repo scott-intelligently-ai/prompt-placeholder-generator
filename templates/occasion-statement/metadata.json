@@ -1,0 +1,121 @@
+{
+  "name": "Occasion Statement",
+  "description": "An Occasion Statement describes when the situation occurred (time/event/setting/pattern), using timing cues only.",
+  "blocks": [
+    {
+      "filename": "ASSIGNMENT block.txt",
+      "required": true,
+      "label": "ASSIGNMENT"
+    },
+    {
+      "filename": "EXAMPLES block.txt",
+      "required": false,
+      "condition": "examples",
+      "label": "EXAMPLES"
+    },
+    {
+      "filename": "INPUT block.txt",
+      "required": false,
+      "condition": "input_variables",
+      "label": "INPUTS"
+    },
+    {
+      "filename": "CANONICAL CHECKLIST block.txt",
+      "required": true,
+      "label": "CANONICAL CHECKLIST"
+    },
+    {
+      "filename": "CRITERIA GUIDANCE block.txt",
+      "required": false,
+      "condition": "criteria_guidance",
+      "label": "CRITERIA GUIDANCE"
+    },
+    {
+      "filename": "INTENT POLICY block.txt",
+      "required": true,
+      "label": "INTENT POLICY"
+    },
+    {
+      "filename": "SCORING FORMAT block.txt",
+      "required": true,
+      "label": "SCORING FORMAT"
+    },
+    {
+      "filename": "RESPONSE FORMAT Block.txt",
+      "required": true,
+      "label": "RESPONSE FORMAT"
+    },
+    {
+      "filename": "INPUT VARIABLES LIST block.txt",
+      "required": false,
+      "condition": "input_variables",
+      "label": "INPUT VARIABLES LIST"
+    }
+  ],
+  "placeholders": [
+    {
+      "key": "artifact_name",
+      "label": "Artifact Name",
+      "description": "The specific name of the Target Artifact being created.",
+      "type": "text",
+      "required": true,
+      "block": "ASSIGNMENT"
+    },
+    {
+      "key": "defined_scope",
+      "label": "Defined Scope",
+      "description": "The subject-matter boundary of what the artifact is allowed to include. Controls what content is allowed, expressed as what is 'in' scope.",
+      "type": "text",
+      "required": true,
+      "block": "ASSIGNMENT"
+    },
+    {
+      "key": "hard_boundary_may_not",
+      "label": "Hard Boundary (May Not)",
+      "description": "Things the AI absolutely should not do — usually about answering questions about the SkillStream more broadly or activities not associated with drafting or evaluating the Target Artifact.",
+      "type": "list",
+      "required": true,
+      "block": "ASSIGNMENT"
+    },
+    {
+      "key": "definition",
+      "label": "Definition",
+      "description": "Describes the artifact in minimal valid form — what counts as a Target Artifact, though not necessarily a good one.",
+      "type": "text",
+      "required": true,
+      "block": "ASSIGNMENT"
+    },
+    {
+      "key": "examples",
+      "label": "Examples",
+      "description": "A bullet list of high-quality Target Artifacts not specific to the user's situation, to help the AI and user understand what a good Target Artifact looks like.",
+      "type": "list",
+      "required": false,
+      "block": "EXAMPLES"
+    },
+    {
+      "key": "input_variables",
+      "label": "Input Variables",
+      "description": "Input variables that hold values from other modules. Each has a name (snake_case) and a use (operational permissions of the input).",
+      "type": "variable_list",
+      "required": false,
+      "block": "INPUTS"
+    },
+    {
+      "key": "checklist",
+      "label": "Canonical Checklist",
+      "description": "A bulleted list of criteria used to evaluate the quality of the Target Artifact. Types in order: Standard (Scope Fit mandatory, Format, Count, Length, Voice, De-duplication), Include, Exclude, Custom.",
+      "type": "list",
+      "required": true,
+      "block": "CANONICAL CHECKLIST"
+    },
+    {
+      "key": "criteria_guidance",
+      "label": "Criteria Guidance",
+      "description": "Interpretive instructions that clarify how criteria should be applied. Narrows ambiguity, defines pass/fail boundaries, supplies operational tests, and prevents predictable failure modes.",
+      "type": "textarea",
+      "required": false,
+      "block": "CRITERIA GUIDANCE"
+    }
+  ]
+}

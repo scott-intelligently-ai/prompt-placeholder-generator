@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prompt Placeholder Generator
 
-## Getting Started
+A web application that extracts placeholder values from user-provided text or uploaded documents (TXT, PDF, DOCX) using OpenAI GPT-5.2, maps them to a Target Artifact prompt template, and exports the results as a CSV file.
 
-First, run the development server:
+## How It Works
+
+1. **Select a Template** -- Choose the Target Artifact template type (e.g., "Occasion Statement").
+2. **Provide Input** -- Either paste text directly or upload one or more documents (TXT, PDF, DOCX).
+3. **Extract** -- GPT-5.2 analyzes the input and extracts values for each placeholder in the template.
+4. **Review & Edit** -- Review the extracted values in an editable form. Adjust as needed.
+5. **Download CSV** -- Export a CSV file with two columns: `placeholder` and `content`.
+
+## Setup
+
+### Prerequisites
+
+- Node.js 18+
+- An OpenAI API key with access to GPT-5.2
+
+### Install
+
+```bash
+npm install
+```
+
+### Configure
+
+Create a `.env.local` file in the project root:
+
+```
+OPENAI_API_KEY=your-openai-api-key-here
+```
+
+### Run Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy to Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Push the repository to GitHub.
+2. Import the project in [Vercel](https://vercel.com).
+3. Add the `OPENAI_API_KEY` environment variable in Vercel's project settings.
+4. Deploy.
 
-## Learn More
+## Adding New Template Types
 
-To learn more about Next.js, take a look at the following resources:
+To add a new Target Artifact template:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Create a new subdirectory under `templates/` (e.g., `templates/my-new-artifact/`).
+2. Add the block `.txt` files for that template.
+3. Create a `metadata.json` describing the blocks and placeholders (see `templates/occasion-statement/metadata.json` for the format).
+4. Redeploy.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Next.js 16** (App Router, TypeScript)
+- **Tailwind CSS**
+- **OpenAI GPT-5.2** (thinking model)
+- **pdf-parse** (PDF extraction)
+- **mammoth** (DOCX extraction)
+- **react-dropzone** (file upload)
+- **papaparse** (CSV generation)
+- **Vercel** (hosting)

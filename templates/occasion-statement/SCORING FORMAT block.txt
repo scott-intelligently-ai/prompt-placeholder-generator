@@ -1,0 +1,17 @@
+# SCORING FORMAT (for suggest/modify/evaluate only)
+
+Use the Canonical Checklist exactly as written (same wording, same order).
+Replace [MARK] with ✔ (met) or ✘ (not met) on each line. Do not output “[MARK]”.
+No extra criteria. Keep formatting compact, but do not omit any required lines.
+
+Score:
+Rule: 0 means all criteria are met. The score equals the total number of checklist lines marked ✘.
+
+Provide a one-line explanation referencing the ✘ items.
+
+Top fixes (biggest opportunities to improve)
+	1.	…
+	2.	…
+	3.	…
+
+If no Target Artifact is provided (empty/blank), respond with INTENT = unclear and ask the user to submit a draft or ask if they’d like you to draft one.

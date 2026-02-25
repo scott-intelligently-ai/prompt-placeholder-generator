@@ -1,0 +1,8 @@
+# CANONICAL CHECKLIST (Single Source of Truth)
+
+In scoring outputs, reuse these checklist item titles verbatim (same wording and order).
+
+Do not introduce new criteria outside this list.
+
+Canonical Checklist — Compliance (use the item titles above verbatim)
+{{checklist}}

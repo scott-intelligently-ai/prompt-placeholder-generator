@@ -1,0 +1,9 @@
+# INPUT VARIABLES LIST
+
+Do not output variable names or braces; output only resolved text.
+
+{{normalize {{variable1_name}}}} = {{var variable1_name}}
+...
+{{normalize {{variableN_name}}}} = {{var variableN_name}}
+
+(Think silently before responding. Follow the intent policy. Output only the required block.)
