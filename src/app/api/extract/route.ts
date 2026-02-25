@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseFiles } from "@/lib/file-parser";
-import { loadTemplateMetadata, loadAllBlocks } from "@/lib/template-loader";
-import { extractPlaceholders } from "@/lib/openai";
 
 export const maxDuration = 60;
 
@@ -43,6 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (fileEntries.length > 0) {
+      const { parseFiles } = await import("@/lib/file-parser");
       const fileText = await parseFiles(fileEntries);
       combinedText = combinedText
         ? `${combinedText}\n\n${fileText}`
@@ -56,6 +54,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const { loadTemplateMetadata, loadAllBlocks } = await import("@/lib/template-loader");
+
     let metadata;
     try {
       metadata = loadTemplateMetadata(templateSlug);
@@ -68,6 +68,8 @@ export async function POST(request: NextRequest) {
     }
 
     const blocks = loadAllBlocks(templateSlug);
+
+    const { extractPlaceholders } = await import("@/lib/openai");
     const placeholders = await extractPlaceholders(
       combinedText,
       metadata,
