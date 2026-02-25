@@ -258,9 +258,13 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-center text-xs text-gray-400">
-          Powered by OpenAI GPT-5.2
-        </p>
+        <div className="mt-8 flex items-center justify-center gap-3 text-xs text-gray-400">
+          <span>Powered by OpenAI GPT-5.2</span>
+          <span>|</span>
+          <a href="/admin" className="underline transition hover:text-gray-600">
+            Admin
+          </a>
+        </div>
       </div>
     </main>
   );

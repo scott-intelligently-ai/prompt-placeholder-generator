@@ -44,3 +44,12 @@ export function loadAllBlocks(
     content: loadBlockContent(slug, block.filename),
   }));
 }
+
+export function loadExtractionRules(slug: string): string | null {
+  const rulesPath = path.join(getTemplatesDir(), slug, "extraction-rules.txt");
+  try {
+    return fs.readFileSync(rulesPath, "utf-8");
+  } catch {
+    return null;
+  }
+}

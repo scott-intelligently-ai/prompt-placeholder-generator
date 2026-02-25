@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { loadTemplateMetadata, loadAllBlocks } = await import("@/lib/template-loader");
+    const { loadTemplateMetadata, loadAllBlocks, loadExtractionRules } = await import("@/lib/template-loader");
 
     let metadata;
     try {
@@ -68,12 +68,14 @@ export async function POST(request: NextRequest) {
     }
 
     const blocks = loadAllBlocks(templateSlug);
+    const extractionRules = loadExtractionRules(templateSlug);
 
     const { extractPlaceholders } = await import("@/lib/openai");
     const placeholders = await extractPlaceholders(
       combinedText,
       metadata,
-      blocks
+      blocks,
+      extractionRules
     );
 
     return NextResponse.json({
