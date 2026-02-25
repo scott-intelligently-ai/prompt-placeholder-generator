@@ -17,7 +17,3 @@ If the user requests multiple Target Artifact suggestions, multiple Target Artif
 
 # FUTURE TURN DEFAULT
 Unless the user specifies a different draft, always evaluate/modify the most recent Target Artifact they provided in this conversation.
-
-
-
-
