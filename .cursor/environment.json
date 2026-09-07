@@ -1,0 +1,15 @@
+{
+  "name": "Prompt Placeholder Generator",
+  "install": "node -e \"const m=parseInt(process.versions.node,10); if (m<20) { console.error('Need Node 20+; found '+process.versions.node); process.exit(1); }\" && npm install",
+  "start": "bash .cursor/write-cloud-env.sh",
+  "terminals": [
+    {
+      "name": "frontend",
+      "command": "npm run dev",
+      "description": "Next.js on http://localhost:3000"
+    }
+  ],
+  "ports": [
+    { "name": "frontend", "port": 3000 }
+  ]
+}
